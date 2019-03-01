@@ -11,11 +11,11 @@ npm run dev
 
 - [x] new Promise()
 - [x] promise.then(onResolve, onReject)
-- [ ] promise.catch()
-- [ ] promise.finally()
+- [x] promise.catch()
+- [x] promise.finally()
 - [x] Promise.resolve()
 - [x] Promise.reject()
-- [ ] 自动化测试及测试用例
+- [x] 自动化测试及测试用例
 
 #### 参考资料
 

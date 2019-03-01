@@ -20,6 +20,10 @@ interface OnReject {
   (reason?: any): any;
 }
 
+interface OnFinally {
+  (): void;
+}
+
 enum PromiseStatus {
   fullfill = 'FULLFILL',
   reject = 'REJECT',
@@ -99,18 +103,18 @@ export class TPromise {
     };
   }
 
-  then(resolve: OnResolve, reject?: OnReject): TPromise {
+  then(onResolve: OnResolve, onReject?: OnReject): TPromise {
     switch (this.promiseStatus) {
       case PromiseStatus.fullfill:
         try {
-          return TPromise.resolve(resolve(this.promiseValue));
+          return TPromise.resolve(onResolve(this.promiseValue));
         } catch (error) {
           return TPromise.reject(error);
         }
       case PromiseStatus.reject:
-        if (reject) {
+        if (onReject) {
           try {
-            return TPromise.reject(reject(this.promiseReason));
+            return TPromise.reject(onReject(this.promiseReason));
           } catch (error) {
             return TPromise.reject(error);
           }
@@ -119,7 +123,16 @@ export class TPromise {
         }
 
       default:
-        return new TPromise(this.generaterThenExecutor(resolve, reject));
+        return new TPromise(this.generaterThenExecutor(onResolve, onReject));
     }
+  }
+
+  catch(onReject: OnReject) {
+    return this.then(() => {}, onReject);
+  }
+
+  finally(onFinally: OnFinally) {
+    onFinally();
+    return this;
   }
 }
